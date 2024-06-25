@@ -1,6 +1,8 @@
 package com.galaxy.novelit.plot.service;
 
 import com.galaxy.novelit.common.exception.NoSuchElementFoundException;
+import com.galaxy.novelit.common.exception.custom.CustomException;
+import com.galaxy.novelit.common.exception.custom.ErrorCode;
 import com.galaxy.novelit.plot.dto.request.PlotCreateRequestDto;
 import com.galaxy.novelit.plot.dto.request.PlotSaveRequestDto;
 import com.galaxy.novelit.plot.dto.response.PlotDetailsResponseDto;
@@ -46,14 +48,14 @@ public class PlotServiceImpl implements PlotService{
     @Override
     public PlotListResponseDto getPlotList(String workspaceUuid) {
         List<PlotEntity> plotEntities = plotRepository.findAllByWorkspaceUuid(workspaceUuid)
-            .orElseThrow(() -> new NoSuchElementFoundException("플롯이 없습니다."));
+            .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_PLOT, "가져올 플롯 목록이 없습니다."));
         return PlotListResponseDto.entityToDto(plotEntities);
     }
 
     @Override
     public PlotListResponseDto getPlotListByKeyword(String workspaceUuid, String keyword) {
         List<PlotEntity> plotEntities = plotRepository.findByKeyword(workspaceUuid, keyword)
-            .orElseThrow(() -> new NoSuchElementFoundException("플롯이 없습니다."));
+            .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_PLOT, "가져올 플롯 목록이 없습니다."));
 
         return PlotListResponseDto.entityToDto(plotEntities);
     }
@@ -75,7 +77,7 @@ public class PlotServiceImpl implements PlotService{
     public PlotDetailsResponseDto getPlotDetails(String plotUuid) {
 
         PlotEntity plotEntity = plotRepository.findPlotEntityByPlotUuid(plotUuid)
-            .orElseThrow(() -> new NoSuchElementFoundException("플롯이 없습니다."));
+            .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_PLOT, "세부정보를 가져올 플롯이 없습니다."));
 
         return PlotDetailsResponseDto.toDto(plotEntity);
     }
@@ -83,7 +85,7 @@ public class PlotServiceImpl implements PlotService{
     @Override
     public void savePlot(PlotSaveRequestDto dto) {
         PlotEntity plotEntity = plotRepository.findPlotEntityByPlotUuid(dto.getPlotUuid())
-            .orElseThrow(() -> new NoSuchElementFoundException("플롯이 없습니다."));
+            .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_PLOT, "업데이트 할 플롯이 없습니다."));
 
         if (dto.getPlotTitle() != null) {
             plotEntity.updatePlotTitle(dto.getPlotTitle());
@@ -120,6 +122,6 @@ public class PlotServiceImpl implements PlotService{
     @Transactional
     public void deletePlot(String plotUuid) {
         plotRepository.deletePlotEntitiesByPlotUuid(plotUuid)
-            .orElseThrow(() -> new NoSuchElementFoundException("플롯이 없습니다."));
+            .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_PLOT, "삭제할 플롯이 없습니다."));
     }
 }

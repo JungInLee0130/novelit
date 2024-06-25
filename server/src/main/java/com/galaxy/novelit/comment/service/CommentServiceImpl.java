@@ -10,6 +10,9 @@ import com.galaxy.novelit.comment.repository.CommentRepository;
 import com.galaxy.novelit.common.exception.NoSuchElementFoundException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.galaxy.novelit.common.exception.custom.CustomException;
+import com.galaxy.novelit.common.exception.custom.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -63,7 +66,7 @@ public class CommentServiceImpl implements CommentService {
             commentUpdateRequestDto.getSpaceUUID());
 
         if (comment == null) {
-            throw new NoSuchElementFoundException("해당 코멘트가 없습니다.");
+            throw new CustomException(ErrorCode.NO_SUCH_COMMENT, "method : updateComment. 코멘트 서치에 실패했습니다!");
         }
 
         List<CommentInfo> commentInfoList = comment.getCommentInfoList();
@@ -82,7 +85,7 @@ public class CommentServiceImpl implements CommentService {
             }
         }
 
-        throw new NoSuchElementFoundException("해당하는 코멘트 UUID가 없습니다.");
+        throw new CustomException(ErrorCode.NO_SUCH_COMMENT_UUID, "method : updateComment. 해당하는 코멘트 UUID가 없습니다!");
     }
 
     @Override
@@ -92,7 +95,7 @@ public class CommentServiceImpl implements CommentService {
             commentDeleteRequestDto.getSpaceUUID());
 
         if (comment == null) {
-            throw new NoSuchElementFoundException("해당 코멘트가 없습니다.");
+            throw new CustomException(ErrorCode.NO_SUCH_COMMENT, "method : deleteComment. 코멘트 서치에 실패했습니다!");
         }
 
         List<CommentInfo> commentInfoList = comment.getCommentInfoList();
@@ -109,6 +112,6 @@ public class CommentServiceImpl implements CommentService {
             }
         }
 
-        throw new NoSuchElementFoundException("해당하는 코멘트 UUID가 없습니다.");
+        throw new CustomException(ErrorCode.NO_SUCH_COMMENT_UUID, "method : deleteComment. 해당하는 코멘트 UUID가 없습니다!");
     }
 }
