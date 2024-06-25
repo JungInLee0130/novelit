@@ -1,4 +1,4 @@
-package com.galaxy.novelit.common.exception;
+package com.galaxy.novelit.common.exception.custom;
 
 import lombok.Getter;
 

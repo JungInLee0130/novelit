@@ -1,6 +1,6 @@
-package com.galaxy.novelit.common.exception.dto;
+package com.galaxy.novelit.common.exception.custom.dto;
 
-import com.galaxy.novelit.common.exception.ErrorCode;
+import com.galaxy.novelit.common.exception.custom.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;

@@ -5,6 +5,8 @@ import com.galaxy.novelit.comment.domain.CommentInfo;
 import com.galaxy.novelit.comment.dto.request.CommentAddRequestDto;
 import com.galaxy.novelit.comment.repository.CommentRepository;
 import com.galaxy.novelit.common.exception.NoSuchElementFoundException;
+import com.galaxy.novelit.common.exception.custom.CustomException;
+import com.galaxy.novelit.common.exception.custom.ErrorCode;
 import com.galaxy.novelit.directory.domain.Directory;
 import com.galaxy.novelit.directory.repository.DirectoryRepository;
 import com.galaxy.novelit.notification.dto.response.NotificationResponseDto;
@@ -89,7 +91,7 @@ public class NotificationServiceImpl implements NotificationService{
         // 파일 찾기
         Directory directory = directoryRepository.findDirectoryByUuid(
                 directoryUUID)
-            .orElseThrow(() -> new NoSuchElementFoundException("작품이 없습니다!"));
+            .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_DIRECTORY, "method: notify. 파일이 없습니다!"));
 
         // 유저UUID, 파일 이름찾기
         String subscriberUUID = directory.getUserUUID();
@@ -124,7 +126,7 @@ public class NotificationServiceImpl implements NotificationService{
     public void notice(CommentAddRequestDto commentAddRequestDto, String publisherUUID) {
         Directory directory = directoryRepository.findDirectoryByUuid(
                 commentAddRequestDto.getDirectoryUUID())
-            .orElseThrow(() -> new NoSuchElementFoundException("작품이 없습니다!"));
+            .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_DIRECTORY, "method: notice. 파일이 없습니다!"));
 
         String subscriberUUID = directory.getUserUUID();
         String directoryName = directory.getName();

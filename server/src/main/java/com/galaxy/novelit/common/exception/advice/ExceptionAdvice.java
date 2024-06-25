@@ -1,7 +1,8 @@
 package com.galaxy.novelit.common.exception.advice;
 
 import com.galaxy.novelit.common.exception.*;
-import com.galaxy.novelit.common.exception.dto.ErrorResponse;
+import com.galaxy.novelit.common.exception.custom.CustomException;
+import com.galaxy.novelit.common.exception.custom.dto.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
