@@ -121,13 +121,4 @@ public class PlotEntity{
         this.climax = climax;
         this.ending = ending;
     }
-
-
-    public void plotInfo(PlotSaveRequestDto saveDto) {
-        // null 값 체크
-        if (ObjectUtils.isEmpty(saveDto.getPlotTitle())) {
-
-        }
-    }
-
 }

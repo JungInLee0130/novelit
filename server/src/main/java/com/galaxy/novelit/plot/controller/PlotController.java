@@ -27,22 +27,9 @@ public class PlotController {
 
     private final PlotService plotService;
 
-    /*@GetMapping
-    public ResponseEntity<PlotListResponseDto> getPlotList(
-        @RequestBody PlotListRequestDto plotListRequestDto) {
-        return ResponseEntity.ok(plotService.getPlotList(plotListRequestDto));
-    }*/
-
-    /*@GetMapping
-    public ResponseEntity<PlotListResponseDto> getPlotList(
-        @RequestParam("workspaceUuid") String workspaceUuid) {
-        return ResponseEntity.ok(plotService.getPlotList(workspaceUuid));
-    }*/
-
     @GetMapping
-    public ResponseEntity<PlotListResponseDto> getPlotList(
-        @RequestParam("workspaceUuid") String workspaceUuid,
-        @RequestParam("keyword") String keyword) {
+    public ResponseEntity<PlotListResponseDto> getPlotList(@RequestParam("workspaceUuid") String workspaceUuid,
+                                                           @RequestParam("keyword") String keyword) {
         if (keyword != null) {
             return ResponseEntity.ok(plotService.getPlotListByKeyword(workspaceUuid, keyword));
         }
