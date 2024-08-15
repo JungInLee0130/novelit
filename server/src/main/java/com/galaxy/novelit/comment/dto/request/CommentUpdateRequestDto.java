@@ -13,5 +13,4 @@ public class CommentUpdateRequestDto {
     private String spaceUUID;
     private String commentUUID;
     private String commentContent;
-    private String commentNickname;
 }

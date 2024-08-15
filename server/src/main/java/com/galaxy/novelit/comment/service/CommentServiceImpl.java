@@ -7,15 +7,14 @@ import com.galaxy.novelit.comment.dto.request.CommentAddRequestDto;
 import com.galaxy.novelit.comment.dto.request.CommentDeleteRequestDto;
 import com.galaxy.novelit.comment.dto.request.CommentUpdateRequestDto;
 import com.galaxy.novelit.comment.repository.CommentRepository;
-import com.galaxy.novelit.common.exception.NoSuchElementFoundException;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.galaxy.novelit.common.exception.custom.CustomException;
 import com.galaxy.novelit.common.exception.custom.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -62,11 +61,12 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void updateComment(CommentUpdateRequestDto commentUpdateRequestDto, String userUUID) {
         // 코멘트 서치
+        // 코멘트 UUID로 가져오고 내용만 수정
         Comment comment = commentRepository.findCommentBySpaceUUID(
             commentUpdateRequestDto.getSpaceUUID());
 
         if (comment == null) {
-            throw new CustomException(ErrorCode.NO_SUCH_COMMENT, "method : updateComment. 코멘트 서치에 실패했습니다!");
+            throw new CustomException(ErrorCode.NO_SUCH_COMMENT, "method : NO_SUCH_SPACEUUID. 코멘트 서치에 실패했습니다!");
         }
 
         List<CommentInfo> commentInfoList = comment.getCommentInfoList();
@@ -75,8 +75,7 @@ public class CommentServiceImpl implements CommentService {
         // 세부 코멘트 서치
         for (CommentInfo info :commentInfoList) {
             // 코멘트 UUID && userUUID 확인
-            if (info.getCommentUUID().equals(commentUpdateRequestDto.getCommentUUID())
-                && info.getUserUUID().equals(userUUID)) {
+            if (info.getCommentUUID().equals(commentUpdateRequestDto.getCommentUUID())) {
                 // 내용 업데이트
                 info.updateCommentContent(commentUpdateRequestDto.getCommentContent());
                 comment.updateCommentInfoList(commentInfoList);
@@ -85,7 +84,7 @@ public class CommentServiceImpl implements CommentService {
             }
         }
 
-        throw new CustomException(ErrorCode.NO_SUCH_COMMENT_UUID, "method : updateComment. 해당하는 코멘트 UUID가 없습니다!");
+        throw new CustomException(ErrorCode.NO_SUCH_COMMENT_UUID, "NO_SUCH_commentInfoList. 해당하는 코멘트 UUID가 없습니다!");
     }
 
     @Override
@@ -95,7 +94,7 @@ public class CommentServiceImpl implements CommentService {
             commentDeleteRequestDto.getSpaceUUID());
 
         if (comment == null) {
-            throw new CustomException(ErrorCode.NO_SUCH_COMMENT, "method : deleteComment. 코멘트 서치에 실패했습니다!");
+            throw new CustomException(ErrorCode.NO_SUCH_COMMENT, "NO_SUCH_SPACEUUID. 코멘트 서치에 실패했습니다!");
         }
 
         List<CommentInfo> commentInfoList = comment.getCommentInfoList();
@@ -112,6 +111,6 @@ public class CommentServiceImpl implements CommentService {
             }
         }
 
-        throw new CustomException(ErrorCode.NO_SUCH_COMMENT_UUID, "method : deleteComment. 해당하는 코멘트 UUID가 없습니다!");
+        throw new CustomException(ErrorCode.NO_SUCH_COMMENT_UUID, "NO_SUCH_COMMENTINFOLIST. 해당하는 코멘트 UUID가 없습니다!");
     }
 }
