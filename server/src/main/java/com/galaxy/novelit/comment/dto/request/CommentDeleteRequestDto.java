@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 public class CommentDeleteRequestDto {
     private String spaceUUID;
     private String commentUUID;
-    private String commentNickname;
 }

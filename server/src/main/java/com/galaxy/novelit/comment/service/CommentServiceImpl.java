@@ -59,7 +59,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public void updateComment(CommentUpdateRequestDto commentUpdateRequestDto, String userUUID) {
+    public void updateComment(CommentUpdateRequestDto commentUpdateRequestDto) {
         // 코멘트 서치
         // 코멘트 UUID로 가져오고 내용만 수정
         Comment comment = commentRepository.findCommentBySpaceUUID(
@@ -88,7 +88,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(CommentDeleteRequestDto commentDeleteRequestDto, String userUUID) {
+    public void deleteComment(CommentDeleteRequestDto commentDeleteRequestDto) {
         // 코멘트 서치
         Comment comment = commentRepository.findCommentBySpaceUUID(
             commentDeleteRequestDto.getSpaceUUID());
@@ -102,8 +102,7 @@ public class CommentServiceImpl implements CommentService {
         // 세부 코멘트 서치
         for (CommentInfo info :commentInfoList) {
             // 소설가인 경우 : 로그인한 사람이랑 같음. 비밀번호없음
-            if (info.getCommentUUID().equals(commentDeleteRequestDto.getCommentUUID())
-                && info.getUserUUID().equals(userUUID)) {
+            if (info.getCommentUUID().equals(commentDeleteRequestDto.getCommentUUID())) {
                 commentInfoList.remove(info);
                 comment.updateCommentInfoList(commentInfoList);
                 commentRepository.save(comment);

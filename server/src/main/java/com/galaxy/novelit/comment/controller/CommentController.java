@@ -37,16 +37,14 @@ public class CommentController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateComment(@RequestBody CommentUpdateRequestDto commentUpdateRequestDto
-    , String username) {
-        commentService.updateComment(commentUpdateRequestDto, username);
+    public ResponseEntity<Void> updateComment(@RequestBody CommentUpdateRequestDto commentUpdateRequestDto) {
+        commentService.updateComment(commentUpdateRequestDto);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteComment(@RequestBody CommentDeleteRequestDto commentDeleteRequestDto
-    , String username) {
-        commentService.deleteComment(commentDeleteRequestDto, username);
+    public ResponseEntity<Void> deleteComment(@RequestBody CommentDeleteRequestDto commentDeleteRequestDto) {
+        commentService.deleteComment(commentDeleteRequestDto);
         return ResponseEntity.ok().build();
     }
 }

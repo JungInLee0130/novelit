@@ -11,7 +11,7 @@ public interface CommentService {
 
     List<CommentInfoDto> getAllComments(String spaceUUID);
 
-    void updateComment(CommentUpdateRequestDto commentUpdateRequestDto, String userUUID);
+    void updateComment(CommentUpdateRequestDto commentUpdateRequestDto);
 
-    void deleteComment(CommentDeleteRequestDto commentDeleteRequestDto, String userUUID);
+    void deleteComment(CommentDeleteRequestDto commentDeleteRequestDto);
 }
