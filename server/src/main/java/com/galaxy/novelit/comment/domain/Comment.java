@@ -1,9 +1,6 @@
 package com.galaxy.novelit.comment.domain;
 
 import com.galaxy.novelit.comment.dto.request.CommentAddRequestDto;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Document(collection = "comment")
@@ -49,5 +50,15 @@ public class Comment {
 
     public void updateCommentInfoList(List<CommentInfo> list){
         this.commentInfoList = list;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "_id='" + _id + '\'' +
+                ", spaceUUID='" + spaceUUID + '\'' +
+                ", directoryUUID='" + directoryUUID + '\'' +
+                ", commentInfoList=" + commentInfoList +
+                '}';
     }
 }

@@ -13,12 +13,15 @@ public enum ErrorCode {
     ILLEGAL_UUID(HttpStatus.BAD_REQUEST, "UUID 오류입니다!"),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "유효하지 않은 토큰입니다!"),
     NON_UNIQUE(HttpStatus.BAD_REQUEST, "NonUniqueException 발생!"),
+
     NO_SUCH_DIRECTORY(HttpStatus.NOT_FOUND, "존재하지 않는 디렉토리 혹은 파일입니다! 확인 후 다시 시도해주세요."),
     NO_SUCH_ELEMENT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 자료입니다!"),
     NO_SUCH_WORKSPACE(HttpStatus.NOT_FOUND, "없는 작품입니다!"),
     NO_SUCH_PLOT(HttpStatus.NOT_FOUND, "존재하지 않는 플롯입니다!"),
-    NO_SUCH_COMMENT(HttpStatus.NOT_FOUND, "존재하지 않는 댓글입니다!"),
+    NO_SUCH_COMMENT(HttpStatus.NOT_FOUND, "댓글이 없습니다!"),
     NO_SUCH_COMMENT_UUID(HttpStatus.NOT_FOUND, "존재하지 않는 코멘트 UUID입니다!"),
+    NO_SUCH_SPACEUUID(HttpStatus.NOT_FOUND, "해당 SPACEUUID의 코멘트가 존재하지않습니다!"),
+
     NOT_LOGGED_IN(HttpStatus.UNAUTHORIZED, "로그인 하지 않은 사용자입니다."),
     WRONG_DIRECTORY_TYPE(HttpStatus.BAD_REQUEST, "디렉토리 타입이 잘못되었습니다!");
 

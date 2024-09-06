@@ -13,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -25,33 +25,26 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void addComment(CommentAddRequestDto commentAddRequestDto, String userUUID) {
-        Comment comment = commentRepository.findCommentBySpaceUUID(
-            commentAddRequestDto.getSpaceUUID());
+        // 코멘트 찾기
+        Optional<Comment> comment = commentRepository.findBySpaceUUID(
+                commentAddRequestDto.getSpaceUUID());
 
-        // 새롭게 들어갈때
-        if (comment == null) {
-            commentRepository.save(Comment.create(commentAddRequestDto, userUUID));
+        if (comment.isPresent()) {
+            Comment comment1 = comment.get();
+            List<CommentInfo> infoList = comment1.getCommentInfoList();
+            infoList.add(CommentInfo.create(commentAddRequestDto, userUUID));
+            comment1.updateCommentInfoList(infoList);
+            commentRepository.save(comment.get());
         }
-        // 이미 있으면
         else {
-            // list에 넣어주기
-            List<CommentInfo> commentInfoList = comment.getCommentInfoList();
-            commentInfoList.add(CommentInfo.create(commentAddRequestDto, userUUID));
-
-            comment.updateCommentInfoList(commentInfoList);
-            // save
-            commentRepository.save(comment);
+            commentRepository.save(Comment.create(commentAddRequestDto, userUUID));
         }
     }
 
     @Override
     public List<CommentInfoDto> getAllComments(String spaceUUID) {
-        Comment comment = commentRepository.findCommentBySpaceUUID(spaceUUID);
-
-        if (comment == null) {
-            List<CommentInfoDto> commentInfoList = new ArrayList<>();
-            return commentInfoList;
-        }
+        Comment comment = commentRepository.findBySpaceUUID(spaceUUID)
+                .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_COMMENT));
 
         return CommentInfoDto.infoListToDtoList(comment.getCommentInfoList());
     }
@@ -59,26 +52,19 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public void updateComment(CommentUpdateRequestDto commentUpdateRequestDto) {
+    public void updateComment(CommentUpdateRequestDto updateResDto) {
         // 코멘트 서치
-        // 코멘트 UUID로 가져오고 내용만 수정
-        Comment comment = commentRepository.findCommentBySpaceUUID(
-            commentUpdateRequestDto.getSpaceUUID());
+        Comment comment = commentRepository.findBySpaceUUID(updateResDto.getSpaceUUID())
+                .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_SPACEUUID));
+        
+        // 성공시 : 코멘트 UUID로 가져오고 내용만 수정
+        List<CommentInfo> infoList = comment.getCommentInfoList();
 
-        if (comment == null) {
-            throw new CustomException(ErrorCode.NO_SUCH_COMMENT, "method : NO_SUCH_SPACEUUID. 코멘트 서치에 실패했습니다!");
-        }
-
-        List<CommentInfo> commentInfoList = comment.getCommentInfoList();
-
-        // 유저 닉네임
-        // 세부 코멘트 서치
-        for (CommentInfo info :commentInfoList) {
-            // 코멘트 UUID && userUUID 확인
-            if (info.getCommentUUID().equals(commentUpdateRequestDto.getCommentUUID())) {
-                // 내용 업데이트
-                info.updateCommentContent(commentUpdateRequestDto.getCommentContent());
-                comment.updateCommentInfoList(commentInfoList);
+        // 세부 코멘트 서치 : 코멘트 UUID 확인
+        for (CommentInfo info :infoList) {
+            if (info.getCommentUUID().equals(updateResDto.getCommentUUID())) {
+                info.updateCommentContent(updateResDto.getCommentContent());
+                comment.updateCommentInfoList(infoList);
                 commentRepository.save(comment);
                 return;
             }
@@ -88,21 +74,17 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(CommentDeleteRequestDto commentDeleteRequestDto) {
+    public void deleteComment(CommentDeleteRequestDto deleteReqDto) {
         // 코멘트 서치
-        Comment comment = commentRepository.findCommentBySpaceUUID(
-            commentDeleteRequestDto.getSpaceUUID());
-
-        if (comment == null) {
-            throw new CustomException(ErrorCode.NO_SUCH_COMMENT, "NO_SUCH_SPACEUUID. 코멘트 서치에 실패했습니다!");
-        }
+        Comment comment = commentRepository.findBySpaceUUID(deleteReqDto.getSpaceUUID())
+                .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_SPACEUUID));
 
         List<CommentInfo> commentInfoList = comment.getCommentInfoList();
 
         // 세부 코멘트 서치
         for (CommentInfo info :commentInfoList) {
             // 소설가인 경우 : 로그인한 사람이랑 같음. 비밀번호없음
-            if (info.getCommentUUID().equals(commentDeleteRequestDto.getCommentUUID())) {
+            if (info.getCommentUUID().equals(deleteReqDto.getCommentUUID())) {
                 commentInfoList.remove(info);
                 comment.updateCommentInfoList(commentInfoList);
                 commentRepository.save(comment);

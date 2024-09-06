@@ -1,15 +1,11 @@
 package com.galaxy.novelit.comment.domain;
 
 import com.galaxy.novelit.comment.dto.request.CommentAddRequestDto;
+import lombok.*;
+
 import java.util.UUID;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -34,5 +30,15 @@ public class CommentInfo {
 
     public void updateCommentContent(String commentContent) {
         this.commentContent = commentContent;
+    }
+
+    @Override
+    public String toString() {
+        return "CommentInfo{" +
+                "commentUUID='" + commentUUID + '\'' +
+                ", commentContent='" + commentContent + '\'' +
+                ", commentNickname='" + commentNickname + '\'' +
+                ", userUUID='" + userUUID + '\'' +
+                '}';
     }
 }
