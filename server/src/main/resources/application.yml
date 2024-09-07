@@ -5,7 +5,22 @@ spring:
 spring:
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: novelit
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      database: ${MONGO_DATABASE_NAME}
+---
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${MARIA_URL}
+    username: ${MARIA_USERNAME}
+    password: ${MARIA_PASSWORD}
+
+---
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      globally_quoted_identifiers: true
+      ddl-auto: update
 
