@@ -5,8 +5,10 @@ import com.galaxy.novelit.plot.dto.request.PlotSaveRequestDto;
 import com.galaxy.novelit.plot.dto.response.PlotDetailsResponseDto;
 import com.galaxy.novelit.plot.dto.response.PlotListResponseDto;
 import com.galaxy.novelit.plot.service.PlotService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +22,7 @@ public class PlotController {
 
     @GetMapping
     public ResponseEntity<PlotListResponseDto> getPlotList(@RequestParam("workspaceUuid") String workspaceUuid,
-                                                           @RequestParam(required = false, name = "keyword") String keyword) {
+                                                           @RequestParam(required = false, name = "keyword") @Length(max = 200) String keyword) {
         if (keyword != null) {
             return ResponseEntity.ok(plotService.getPlotListByKeyword(workspaceUuid, keyword));
         }
@@ -28,7 +30,7 @@ public class PlotController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createPlot(@RequestBody PlotCreateRequestDto plotCreateRequestDto) {
+    public ResponseEntity<Void> createPlot(@RequestBody @Valid PlotCreateRequestDto plotCreateRequestDto) {
         plotService.createPlot(plotCreateRequestDto);
         return ResponseEntity.ok().build();
     }
@@ -39,7 +41,7 @@ public class PlotController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> savePlot(@RequestBody PlotSaveRequestDto plotSaveRequestDto) {
+    public ResponseEntity<Void> savePlot(@RequestBody @Valid PlotSaveRequestDto plotSaveRequestDto) {
         plotService.savePlot(plotSaveRequestDto);
         return ResponseEntity.ok().build();
     }

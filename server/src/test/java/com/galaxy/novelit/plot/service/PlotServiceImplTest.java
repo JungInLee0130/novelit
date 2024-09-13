@@ -1,10 +1,9 @@
-package com.galaxy.novelit.plot;
+package com.galaxy.novelit.plot.service;
 
 import com.galaxy.novelit.plot.dto.request.PlotSaveRequestDto;
 import com.galaxy.novelit.plot.entity.Plot;
 import com.galaxy.novelit.plot.fixture.PlotFixture;
 import com.galaxy.novelit.plot.repository.PlotRepository;
-import com.galaxy.novelit.plot.service.PlotServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -39,12 +39,6 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	//mapStruct
-	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
-
-//	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-//	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 	//Querydsl 추가
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
@@ -62,9 +56,19 @@ dependencies {
 	/*// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'*/
 
+	// gson
+	implementation 'com.google.code.gson:gson:2.8.6'
+
+	// validation
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+
 	// junit5
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
 	testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.21.0'
+
+	// test slf4j
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {
