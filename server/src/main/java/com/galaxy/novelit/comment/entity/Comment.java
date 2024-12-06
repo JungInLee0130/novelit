@@ -1,8 +1,11 @@
 package com.galaxy.novelit.comment.entity;
 
 import com.galaxy.novelit.comment.domain.CommentInfo;
-import com.galaxy.novelit.comment.dto.request.CommentAddRequestDto;
-import lombok.AllArgsConstructor;
+import com.galaxy.novelit.comment.request.CommentAddRequest;
+import com.galaxy.novelit.comment.request.CommentUpdateRequest;
+import com.galaxy.novelit.common.exception.custom.CustomException;
+import com.galaxy.novelit.common.exception.custom.ErrorCode;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,13 +14,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Objects;
 
-@Document(collection = "comment")
+@Document(collection = "comments")
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment {
     @Id
     private String _id;
@@ -25,24 +26,36 @@ public class Comment {
     private String directoryUUID;
     private List<CommentInfo> commentInfoList;
 
-    public static Comment create(CommentAddRequestDto commentAddRequestDto, String userUUID) {
+    public Comment(String _id, String spaceUUID, String directoryUUID, List<CommentInfo> commentInfoList) {
+        this._id = _id;
+        this.spaceUUID = spaceUUID;
+        this.directoryUUID = directoryUUID;
+        this.commentInfoList = commentInfoList;
+    }
+
+    @Builder
+    public Comment(String spaceUUID, String directoryUUID, List<CommentInfo> commentInfoList) {
+        this.spaceUUID = spaceUUID;
+        this.directoryUUID = directoryUUID;
+        this.commentInfoList = commentInfoList;
+    }
+
+    public static Comment createComment(CommentAddRequest commentAddRequest, String userUUID) {
         List<CommentInfo> commentInfoList = new ArrayList<>();
 
-        UUID uuid = UUID.randomUUID();
+        CommentInfo commentInfo = CommentInfo.builder()
+                .commentContent(commentAddRequest.commentContent())
+                .commentNickname(commentAddRequest.commentNickname())
+                .userUUID(userUUID)
+                .build();
 
-        String commentUUID = uuid.toString();
 
-        commentInfoList.add(CommentInfo.builder()
-            .commentUUID(commentUUID)
-            .commentContent(commentAddRequestDto.getCommentContent())
-            .commentNickname(commentAddRequestDto.getCommentNickname())
-            .userUUID(userUUID)
-            .build());
+        commentInfoList.add(commentInfo);
 
 
         return Comment.builder()
-            .spaceUUID(commentAddRequestDto.getSpaceUUID())
-            .directoryUUID(commentAddRequestDto.getDirectoryUUID())
+            .spaceUUID(commentAddRequest.spaceUUID())
+            .directoryUUID(commentAddRequest.directoryUUID())
             .commentInfoList(commentInfoList)
             .build();
     }
@@ -50,4 +63,33 @@ public class Comment {
     public void updateCommentInfoList(List<CommentInfo> list){
         this.commentInfoList = list;
     }
+
+    public void updateCommentInfoList(CommentUpdateRequest commentUpdateRequest, String userUUID) {
+        validateCommentInfoList(this.commentInfoList);
+
+        for (CommentInfo info : commentInfoList) {
+            String curInfoUUID = info.getCommentUUID();
+            String updateCommentUUID = commentUpdateRequest.commentUUID();
+
+            if (curInfoUUID.equals(updateCommentUUID)) {
+                validateSameCommentWriter(info.getUserUUID(), userUUID);
+                info.updateCommentContent(commentUpdateRequest.commentContent());
+                break;
+            }
+        }
+    }
+
+    private void validateCommentInfoList(List<CommentInfo> commentInfoList) {
+        if (Objects.isNull(commentInfoList)){
+            throw new CustomException(ErrorCode.NOT_FOUND, "댓글목록이 없습니다.");
+        }
+    }
+
+    private void validateSameCommentWriter(String commentUserUUID, String loginUUID) {
+        if (!commentUserUUID.equals(loginUUID)) { // 일치
+            throw new CustomException(ErrorCode.NOT_COMMENT_WRITER);
+        }
+    }
+
+
 }
