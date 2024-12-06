@@ -46,7 +46,7 @@ public class Comment {
         CommentInfo commentInfo = CommentInfo.builder()
                 .commentContent(commentAddRequest.commentContent())
                 .commentNickname(commentAddRequest.commentNickname())
-                .userUUID(userUUID)
+                .commentUserUUID(userUUID)
                 .build();
 
 
@@ -72,7 +72,7 @@ public class Comment {
             String updateCommentUUID = commentUpdateRequest.commentUUID();
 
             if (curInfoUUID.equals(updateCommentUUID)) {
-                validateSameCommentWriter(info.getUserUUID(), userUUID);
+                validateSameCommentWriter(info.getCommentUserUUID(), userUUID);
                 info.updateCommentContent(commentUpdateRequest.commentContent());
                 break;
             }
