@@ -19,8 +19,14 @@ public enum ErrorCode {
     NO_SUCH_PLOT(HttpStatus.NOT_FOUND, "존재하지 않는 플롯입니다!"),
     NO_SUCH_COMMENT(HttpStatus.NOT_FOUND, "존재하지 않는 댓글입니다!"),
     NO_SUCH_COMMENT_UUID(HttpStatus.NOT_FOUND, "존재하지 않는 코멘트 UUID입니다!"),
+    NO_SUCH_COMMNET_INFO(HttpStatus.NOT_FOUND, "해당 댓글정보가 없습니다!"),
+
     NOT_LOGGED_IN(HttpStatus.UNAUTHORIZED, "로그인 하지 않은 사용자입니다."),
-    WRONG_DIRECTORY_TYPE(HttpStatus.BAD_REQUEST, "디렉토리 타입이 잘못되었습니다!");
+    WRONG_DIRECTORY_TYPE(HttpStatus.BAD_REQUEST, "디렉토리 타입이 잘못되었습니다!"),
+    NOT_COMMENT_WRITER(HttpStatus.BAD_REQUEST, "댓글 작성자가 아닙니다!"),
+
+    NOT_FOUND(HttpStatus.NOT_FOUND, "해당 정보를 찾을수없습니다!");
+
 
     private final HttpStatus status;
     private final String message;

@@ -1,6 +1,6 @@
 package com.galaxy.novelit.notification.dto.response;
 
-import com.galaxy.novelit.comment.dto.request.CommentAddRequestDto;
+import com.galaxy.novelit.comment.request.CommentAddRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,10 +24,10 @@ public class NotificationResponseDto {
             .build();
     }
 
-    public static NotificationResponseDto create(CommentAddRequestDto commentAddRequestDto) {
+    public static NotificationResponseDto create(CommentAddRequest commentAddRequest) {
         return NotificationResponseDto.builder()
             .type("alertComment")
-            .content(commentAddRequestDto.getCommentNickname() + " 님이 댓글을 남겼습니다.")
+            .content(commentAddRequest.commentNickname() + " 님이 댓글을 남겼습니다.")
             .build();
     }
 }

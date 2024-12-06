@@ -1,5 +1,6 @@
 package com.galaxy.novelit.notification.redis.domain;
 
+import com.galaxy.novelit.common.utils.BaseTimeEntity;
 import com.galaxy.novelit.notification.redis.dto.request.AlarmRedisRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import org.springframework.data.redis.core.TimeToLive;
 @NoArgsConstructor
 @AllArgsConstructor
 @RedisHash("AlarmRedis")
-public class AlarmRedis {
+public class AlarmRedis extends BaseTimeEntity {
     @Id
     private String pubName;
     private Noti noti;
