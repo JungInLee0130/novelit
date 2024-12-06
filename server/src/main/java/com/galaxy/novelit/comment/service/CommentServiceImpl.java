@@ -1,13 +1,13 @@
 package com.galaxy.novelit.comment.service;
 
-import com.galaxy.novelit.comment.domain.Comment;
+import com.galaxy.novelit.comment.entity.Comment;
 import com.galaxy.novelit.comment.domain.CommentInfo;
 import com.galaxy.novelit.comment.dto.CommentInfoDto;
 import com.galaxy.novelit.comment.dto.request.CommentAddRequestDto;
 import com.galaxy.novelit.comment.dto.request.CommentDeleteRequestDto;
 import com.galaxy.novelit.comment.dto.request.CommentUpdateRequestDto;
 import com.galaxy.novelit.comment.repository.CommentRepository;
-import com.galaxy.novelit.common.exception.NoSuchElementFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
 

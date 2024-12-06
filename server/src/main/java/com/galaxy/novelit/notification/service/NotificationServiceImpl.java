@@ -1,10 +1,9 @@
 package com.galaxy.novelit.notification.service;
 
-import com.galaxy.novelit.comment.domain.Comment;
+import com.galaxy.novelit.comment.entity.Comment;
 import com.galaxy.novelit.comment.domain.CommentInfo;
 import com.galaxy.novelit.comment.dto.request.CommentAddRequestDto;
 import com.galaxy.novelit.comment.repository.CommentRepository;
-import com.galaxy.novelit.common.exception.NoSuchElementFoundException;
 import com.galaxy.novelit.common.exception.custom.CustomException;
 import com.galaxy.novelit.common.exception.custom.ErrorCode;
 import com.galaxy.novelit.directory.domain.Directory;

@@ -1,18 +1,18 @@
-package com.galaxy.novelit.comment.domain;
+package com.galaxy.novelit.comment.entity;
 
+import com.galaxy.novelit.comment.domain.CommentInfo;
 import com.galaxy.novelit.comment.dto.request.CommentAddRequestDto;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Slf4j
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 @Document(collection = "comment")
 @Getter
 @NoArgsConstructor
