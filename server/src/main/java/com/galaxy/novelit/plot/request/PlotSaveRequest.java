@@ -1,4 +1,4 @@
-package com.galaxy.novelit.plot.dto.request;
+package com.galaxy.novelit.plot.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlotCreateRequestDto {
-    private String workspaceUuid;
+public class PlotSaveRequest {
+
+    private String plotUuid;
     private String plotTitle;
     private String story;
     private String beginning;

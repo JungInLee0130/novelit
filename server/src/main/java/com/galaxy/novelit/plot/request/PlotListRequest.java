@@ -1,4 +1,4 @@
-package com.galaxy.novelit.plot.dto.request;
+package com.galaxy.novelit.plot.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlotListRequestDto {
+public class PlotListRequest {
     private String workspaceUuid; // 작품 id
     private String keyword; // 검색 키워드
 }

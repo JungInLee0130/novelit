@@ -1,14 +1,12 @@
 package com.galaxy.novelit.plot.controller;
 
-import com.galaxy.novelit.plot.dto.request.PlotListRequestDto;
-import com.galaxy.novelit.plot.dto.request.PlotSaveRequestDto;
-import com.galaxy.novelit.plot.dto.response.PlotDetailsResponseDto;
-import com.galaxy.novelit.plot.dto.request.PlotCreateRequestDto;
-import com.galaxy.novelit.plot.dto.response.PlotListResponseDto;
+import com.galaxy.novelit.plot.request.PlotSaveRequest;
+import com.galaxy.novelit.plot.response.PlotDetailResponse;
+import com.galaxy.novelit.plot.request.PlotCreateRequest;
+import com.galaxy.novelit.plot.response.PlotListResponse;
 import com.galaxy.novelit.plot.service.PlotService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,28 +26,32 @@ public class PlotController {
     private final PlotService plotService;
 
     @GetMapping
-    public ResponseEntity<PlotListResponseDto> getPlotList(@RequestParam("workspaceUuid") String workspaceUuid,
-                                                           @RequestParam("keyword") String keyword) {
-        if (keyword != null) {
+    public ResponseEntity<PlotListResponse> getPlotList(@RequestParam("workspaceUuid") String workspaceUuid,
+                                                        @RequestParam(value = "keyword", required = false) String keyword) {
+        if (isKeywordPresent(keyword)) {
             return ResponseEntity.ok(plotService.getPlotListByKeyword(workspaceUuid, keyword));
         }
         return ResponseEntity.ok(plotService.getPlotList(workspaceUuid));
     }
 
+    private boolean isKeywordPresent(String keyword){
+        return keyword != null;
+    }
+
     @PostMapping
-    public ResponseEntity<Void> createPlot(@RequestBody PlotCreateRequestDto plotCreateRequestDto) {
-        plotService.createPlot(plotCreateRequestDto);
+    public ResponseEntity<Void> createPlot(@RequestBody PlotCreateRequest plotCreateRequest) {
+        plotService.createPlot(plotCreateRequest);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/detail")
-    public ResponseEntity<PlotDetailsResponseDto> getPlotDetails(@RequestParam("plotUuid") String plotUuid) {
+    public ResponseEntity<PlotDetailResponse> getPlotDetails(@RequestParam("plotUuid") String plotUuid) {
         return ResponseEntity.ok(plotService.getPlotDetails(plotUuid));
     }
 
     @PutMapping
-    public ResponseEntity<Void> savePlot(@RequestBody PlotSaveRequestDto plotSaveRequestDto) {
-        plotService.savePlot(plotSaveRequestDto);
+    public ResponseEntity<Void> savePlot(@RequestBody PlotSaveRequest plotSaveRequest) {
+        plotService.savePlot(plotSaveRequest);
         return ResponseEntity.ok().build();
     }
 
