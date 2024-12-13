@@ -1,0 +1,18 @@
+spring:
+  config:
+    import: env_monitoring.yml
+---
+
+management:
+  server:
+    port: ${MANAGEMENT_SERVER_PORT}
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
