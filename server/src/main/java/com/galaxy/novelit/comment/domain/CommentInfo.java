@@ -15,28 +15,28 @@ public class CommentInfo extends BaseTimeEntity {
     private String commentUUID;
     private String commentContent;
     private String commentNickname;
-    private String userUUID;
+    private String commentUserUUID;
 
-    public CommentInfo(String commentUUID, String commentContent, String commentNickname, String userUUID) {
+    public CommentInfo(String commentUUID, String commentContent, String commentNickname, String commentUserUUID) {
         this.commentUUID = commentUUID;
         this.commentContent = commentContent;
         this.commentNickname = commentNickname;
-        this.userUUID = userUUID;
+        this.commentUserUUID = commentUserUUID;
     }
 
     @Builder
-    public CommentInfo(String commentContent, String commentNickname, String userUUID) {
+    public CommentInfo(String commentContent, String commentNickname, String commentUserUUID) {
         this.commentUUID = UUID.randomUUID().toString();
         this.commentContent = commentContent;
         this.commentNickname = commentNickname;
-        this.userUUID = userUUID;
+        this.commentUserUUID = commentUserUUID;
     }
 
-    public static CommentInfo createCommentInfo(CommentAddRequest commentAddRequest, String userUUID) {
+    public static CommentInfo createCommentInfo(CommentAddRequest commentAddRequest, String commentUserUUID) {
         return CommentInfo.builder()
                 .commentContent(commentAddRequest.commentContent())
                 .commentNickname(commentAddRequest.commentNickname())
-                .userUUID(userUUID)
+                .commentUserUUID(commentUserUUID)
                 .build();
     }
 

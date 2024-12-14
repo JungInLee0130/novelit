@@ -1,7 +1,6 @@
-package com.galaxy.novelit.notification.dto.request;
+package com.galaxy.novelit.plot.request;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class NotificationRequestDto {
-    private String subscriberUUID;
+public class PlotListRequest {
+    private String workspaceUuid; // 작품 id
+    private String keyword; // 검색 키워드
 }

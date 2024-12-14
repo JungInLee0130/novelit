@@ -1,29 +1,22 @@
 package com.galaxy.novelit.plot.entity;
 
-import com.galaxy.novelit.plot.dto.request.PlotCreateRequestDto;
-import com.galaxy.novelit.plot.dto.request.PlotSaveRequestDto;
+import com.galaxy.novelit.plot.request.PlotCreateRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.util.ObjectUtils;
 
 @Entity(name = "plot")
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
-@Builder
 @DynamicInsert
 @DynamicUpdate
-public class PlotEntity{
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Plot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "plot_id", nullable = false)
@@ -55,8 +48,9 @@ public class PlotEntity{
     @ColumnDefault("''")
     private String ending;
 
-    public PlotEntity(String workspaceUuid, String plotUuid, String plotTitle, String story,
-        String beginning, String rising, String crisis, String climax, String ending) {
+    @Builder
+    public Plot(String workspaceUuid, String plotUuid, String plotTitle, String story,
+                String beginning, String rising, String crisis, String climax, String ending) {
         this.workspaceUuid = workspaceUuid;
         this.plotUuid = plotUuid;
         this.plotTitle = plotTitle;
@@ -69,8 +63,8 @@ public class PlotEntity{
     }
 
     // dto -> entity
-    public static PlotEntity create(String plotString, PlotCreateRequestDto dto) {
-        return PlotEntity.builder()
+    public static Plot create(String plotString, PlotCreateRequest dto) {
+        return Plot.builder()
             .workspaceUuid(dto.getWorkspaceUuid())
             .plotUuid(plotString)
             .plotTitle(dto.getPlotTitle())

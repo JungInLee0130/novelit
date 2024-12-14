@@ -31,7 +31,7 @@ public class CommentController {
 
         commentService.addComment(commentAddRequest, publisherUUID);
 
-        notificationService.notice(commentAddRequest, publisherUUID);
+        notificationService.notifyAllCommentReceiver(commentAddRequest, publisherUUID);
 
         return ResponseEntity.ok().build();
     }

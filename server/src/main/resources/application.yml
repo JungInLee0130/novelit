@@ -87,6 +87,16 @@ spring:
 
 ---
 
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+---
+server:
+  port: ${SPRING_SERVER_PORT}
+
+
+
 # 토큰 관련 secret Key 및 RedirectUri 설정
 #  app:
 #    auth:

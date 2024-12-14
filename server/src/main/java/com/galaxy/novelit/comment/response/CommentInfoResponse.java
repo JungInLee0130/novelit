@@ -12,7 +12,7 @@ public record CommentInfoResponse (String commentUUID,
 {
     public CommentInfoResponse (CommentInfo commentInfo) {
         this(commentInfo.getCommentUUID(), commentInfo.getCommentContent(),
-                commentInfo.getCommentNickname(), commentInfo.getUserUUID());
+                commentInfo.getCommentNickname(), commentInfo.getCommentUserUUID());
     }
 
     public static List<CommentInfoResponse> infoListToDtoList(List<CommentInfo> commentInfos) {

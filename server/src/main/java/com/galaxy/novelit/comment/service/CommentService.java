@@ -75,6 +75,7 @@ public class CommentService {
         comment.updateCommentInfoList(commentUpdateRequest, userUUID);
     }
 
+    @Transactional(readOnly = true)
     public CommentInfo getCommentInfo(String spaceUUID, String commentUUID) {
         Comment comment = commentRepository.findCommentBySpaceUUID(spaceUUID)
                 .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_COMMENT));
@@ -103,7 +104,7 @@ public class CommentService {
         for (CommentInfo info :commentInfoList) {
             // 소설가인 경우 : 로그인한 사람이랑 같음. 비밀번호없음
             if (info.getCommentUUID().equals(commentDeleteRequest.commentUUID())
-                && info.getUserUUID().equals(userUUID)) {
+                && info.getCommentUserUUID().equals(userUUID)) {
                 commentInfoList.remove(info);
                 comment.updateCommentInfoList(commentInfoList);
                 commentRepository.save(comment);

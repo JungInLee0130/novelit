@@ -8,14 +8,16 @@ import com.galaxy.novelit.common.exception.custom.CustomException;
 import com.galaxy.novelit.common.exception.custom.ErrorCode;
 import com.galaxy.novelit.directory.domain.Directory;
 import com.galaxy.novelit.directory.repository.DirectoryRepository;
-import com.galaxy.novelit.notification.dto.response.NotificationResponseDto;
-import com.galaxy.novelit.notification.redis.dto.request.AlarmRedisRequestDto;
+import com.galaxy.novelit.notification.redis.request.AlarmRedisRequest;
 import com.galaxy.novelit.notification.redis.service.AlarmRedisService;
 import com.galaxy.novelit.notification.repository.EmitterRepository;
+import com.galaxy.novelit.notification.response.NotificationInfo;
+import com.galaxy.novelit.notification.response.NotificationResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class NotificationService {
     private static final Long DEFAULT_TIMEOUT = 60L * 60 * 1000; // 1시간 지속
@@ -38,22 +41,17 @@ public class NotificationService {
 
     public SseEmitter subscribe(String lastEventId, String subscriberUUID, HttpServletResponse response)
     {
-        //String id = subscriberUUID;
         String id = subscriberUUID + "_" + System.currentTimeMillis();
 
-        // subscriberUUID
         SseEmitter emitter = createEmitter(id);
 
-        sendToClient(emitter, id, "alertComment" ,NotificationResponseDto.builder()
-            .type("Connection")
-            .content("최초연결")
-            .build());
+        sendToClient(emitter, id, "Connection" , new NotificationResponse("Connection", "최초연결"));
 
         if (!lastEventId.isEmpty()) {
-            Map<String, Object> events = emitterRepository.findAllEventCacheStartWithId(id);
+            Map<String, NotificationInfo> events = emitterRepository.findAllEventCacheStartWithId(id);
             events.entrySet().stream()
                 .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
-                .forEach(entry -> sendToClient(emitter, entry.getKey(),"alertComment" , entry.getValue()));
+                .forEach(entry -> sendToClient(emitter, entry.getKey(),"Connection" , entry.getValue()));
         }
 
         return emitter;
@@ -70,7 +68,6 @@ public class NotificationService {
     }
 
 
-    // 처음 구독
     private void sendToClient(SseEmitter emitter, String id, String name, Object data)
     {
         try{
@@ -85,110 +82,40 @@ public class NotificationService {
         }
     }
 
-    // 알림 보낼 로직에 send 메서드 호출하면 됨
-    public void notify(String commentNickname, String directoryUUID, String publisherUUID) {
-        // 파일 찾기
-        Directory directory = directoryRepository.findDirectoryByUuid(
-                directoryUUID)
-            .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_DIRECTORY, "method: notify. 파일이 없습니다!"));
-
-        // 유저UUID, 파일 이름찾기
-        String subscriberUUID = directory.getUserUUID();
-        String directoryName = directory.getName();
-
-        // 알림 responseDto 만들기
-        NotificationResponseDto notificationResponseDto = NotificationResponseDto.createAlarmComment(commentNickname);
-
-
-        Map<String,SseEmitter> sseEmitters = emitterRepository.findAllEmittersStartWithId(subscriberUUID);
-
-
-        sseEmitters.forEach(
-            (key, emitter) -> {
-                // 데이터 캐시 저장 (유실된 데이터 처리 위함)
-                emitterRepository.saveEventCache(key, notificationResponseDto);
-
-                sendToClient(emitter, key, "alertComment", notificationResponseDto);
-
-                // 알림 레디스에 저장
-                alarmRedisService.save(AlarmRedisRequestDto.builder()
-                    //                    .pubUUID(publisherUUID)
-                    .pubName(commentNickname)
-                    .subUUID(subscriberUUID)
-                    .directoryName(directoryName)
-                    .build());
-            }
-        );
-    }
-
-    public void notice(CommentAddRequest commentAddRequest, String publisherUUID) {
-        Directory directory = directoryRepository.findDirectoryByUuid(
-                        commentAddRequest.directoryUUID())
+    public void notifyAllCommentReceiver(CommentAddRequest commentAddRequest, String publisherUUID) {
+        Directory directory = directoryRepository.findDirectoryByUuid(commentAddRequest.directoryUUID())
             .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_DIRECTORY, "method: notice. 파일이 없습니다!"));
 
-        String subscriberUUID = directory.getUserUUID();
-        String directoryName = directory.getName();
+        NotificationInfo notificationInfo = NotificationResponse.create(commentAddRequest, directory);
 
-        NotificationResponseDto notificationResponseDto = NotificationResponseDto.create(commentAddRequest);
-
-        Comment comment = commentRepository.findCommentBySpaceUUID(
-                commentAddRequest.spaceUUID())
+        Comment comment = commentRepository.findCommentBySpaceUUID(commentAddRequest.spaceUUID())
                 .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_COMMENT));
 
         List<CommentInfo> commentInfoList = comment.getCommentInfoList();
 
-        Set<String> userSet = commentInfoList.stream()
-            .map(CommentInfo::getUserUUID)
+        Set<String> subscribers = commentInfoList.stream()
+            .map(CommentInfo::getCommentUserUUID)
             .collect(Collectors.toSet());
 
+        for (String subscriberUUID : subscribers) {
+            if (subscriberUUID.equals(publisherUUID)) continue;
 
-        if(userSet.size() >= 2) {
-
-            for (String userUUID : userSet) {
-                if (!publisherUUID.equals(userUUID)) {
-                    Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmittersStartWithId(
-                        userUUID);
-
-
-                    sseEmitters.forEach(
-                        (key, emitter) -> {
-                            // 데이터 캐시 저장 (유실된 데이터 처리 위함)
-                            emitterRepository.saveEventCache(key, notificationResponseDto);
-
-                            sendToClient(emitter, key, "alertComment", notificationResponseDto);
-
-                            // 알림 레디스에 저장
-                            alarmRedisService.save(AlarmRedisRequestDto.builder()
-                                .pubName(commentAddRequest.commentNickname())
-                                .subUUID(userUUID)
-                                .directoryName(directoryName)
-                                .build());
-                        }
-                    );
-                }
-            }
-        }
-        else if (userSet.size() == 1){
-            if (subscriberUUID.equals(publisherUUID)) return;
-            Map<String,SseEmitter> sseEmitters = emitterRepository.findAllEmittersStartWithId(subscriberUUID);
-
-            log.info("userSet : 1 : {}", subscriberUUID);
+            Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmittersStartWithId(subscriberUUID);
 
             sseEmitters.forEach(
                 (key, emitter) -> {
-                    // 데이터 캐시 저장 (유실된 데이터 처리 위함)
-                    emitterRepository.saveEventCache(key, notificationResponseDto);
+                    emitterRepository.saveEventCache(key, notificationInfo);
 
-                    sendToClient(emitter, key, "alertComment", notificationResponseDto);
+                    sendToClient(emitter, key, "Connection", notificationInfo);
 
-                    // 알림 레디스에 저장
-                    alarmRedisService.save(AlarmRedisRequestDto.builder()
+                    alarmRedisService.save(AlarmRedisRequest.builder()
                         .pubName(commentAddRequest.commentNickname())
                         .subUUID(subscriberUUID)
-                        .directoryName(directoryName)
+                        .directoryName(directory.getName())
                         .build());
                 }
             );
+
         }
     }
 }
