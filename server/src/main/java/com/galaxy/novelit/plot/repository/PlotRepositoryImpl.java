@@ -10,6 +10,8 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.galaxy.novelit.plot.entity.QPlot.plot;
+
 @Slf4j
 @RequiredArgsConstructor
 public class PlotRepositoryImpl implements PlotRepositoryCustom{
@@ -22,35 +24,34 @@ public class PlotRepositoryImpl implements PlotRepositoryCustom{
         String pattern = keyword + "%"; // 2. 젤 앞에
         String pattern2 = "%" + keyword + "%"; // 2. 중간
 
-        QPlot qPlot = QPlot.plot;
-
         // 1. 아예 일치
         List<Plot> list1 = queryFactory
-            .selectFrom(qPlot)
+            .selectFrom(plot)
             .where(
-                qPlot.plotTitle.eq(keyword)
-                    .and(qPlot.workspaceUuid.eq(workspaceUuid))
+                    plot.plotTitle.eq(keyword)
+                    .and(plot.workspaceUuid.eq(workspaceUuid))
             )
             .fetch();
 
         // 2. 젤 앞에
         List<Plot> list2 = queryFactory
-            .selectFrom(qPlot)
+            .selectFrom(plot)
             .where(
-                qPlot.plotTitle.like(pattern)
-                    .and(qPlot.workspaceUuid.eq(workspaceUuid))
+                    plot.plotTitle.like(pattern)
+                    .and(plot.workspaceUuid.eq(workspaceUuid))
             )
             .fetch();
 
         // 3. 중간에
         List<Plot> list3 = queryFactory
-            .selectFrom(qPlot)
+            .selectFrom(plot)
             .where(
-                qPlot.plotTitle.like(pattern2)
-                    .and(qPlot.workspaceUuid.eq(workspaceUuid))
+                    plot.plotTitle.like(pattern2)
+                    .and(plot.workspaceUuid.eq(workspaceUuid))
             )
             .fetch();
 
+        // 순서보장
         LinkedHashMap<String, Plot> plotEntityHashMap = new LinkedHashMap<>();
 
         List<Plot> result = new ArrayList<>();

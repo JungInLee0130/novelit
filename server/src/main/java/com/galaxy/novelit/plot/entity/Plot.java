@@ -1,6 +1,7 @@
 package com.galaxy.novelit.plot.entity;
 
 import com.galaxy.novelit.plot.request.PlotCreateRequest;
+import com.galaxy.novelit.plot.request.PlotUpdateRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -63,56 +64,47 @@ public class Plot {
     }
 
     // dto -> entity
-    public static Plot create(String plotString, PlotCreateRequest dto) {
+    public static Plot create(String plotString, PlotCreateRequest plotCreateRequest) {
         return Plot.builder()
-            .workspaceUuid(dto.getWorkspaceUuid())
+            .workspaceUuid(plotCreateRequest.workspaceUuid())
             .plotUuid(plotString)
-            .plotTitle(dto.getPlotTitle())
-            .story(dto.getStory())
-            .beginning(dto.getBeginning())
-            .rising(dto.getRising())
-            .crisis(dto.getCrisis())
-            .climax(dto.getClimax())
-            .ending(dto.getEnding())
+            .plotTitle(plotCreateRequest.plotTitle())
+            .story(plotCreateRequest.story())
+            .beginning(plotCreateRequest.beginning())
+            .rising(plotCreateRequest.rising())
+            .crisis(plotCreateRequest.crisis())
+            .climax(plotCreateRequest.climax())
+            .ending(plotCreateRequest.ending())
             .build();
     }
 
-    public void updatePlotTitle(String plotTitle) {
-        this.plotTitle = plotTitle;
-    }
+    public void updatePlot(PlotUpdateRequest plotUpdateRequest) {
+        if (plotUpdateRequest.plotTitle() != null) {
+            this.plotTitle = plotUpdateRequest.plotTitle();
+        }
 
-    public void updateStory(String story) {
-        this.story = story;
-    }
+        if (plotUpdateRequest.story() != null) {
+            this.story = plotUpdateRequest.story();
+        }
 
-    public void updateBeginning(String beginning) {
-        this.beginning = beginning;
-    }
+        if (plotUpdateRequest.beginning() != null) {
+            this.beginning = plotUpdateRequest.beginning();
+        }
 
-    public void updateRising(String rising) {
-        this.rising = rising;
-    }
+        if (plotUpdateRequest.rising() != null) {
+            this.rising = plotUpdateRequest.rising();
+        }
 
-    public void updateCrisis(String crisis) {
-        this.crisis = crisis;
-    }
+        if (plotUpdateRequest.crisis() != null) {
+            this.crisis = plotUpdateRequest.crisis();
+        }
 
-    public void updateClimax(String climax) {
-        this.climax = climax;
-    }
+        if (plotUpdateRequest.climax() != null) {
+            this.climax = plotUpdateRequest.climax();
+        }
 
-    public void updateEnding(String ending) {
-        this.ending = ending;
-    }
-
-    public void updatePlot(String plotTitle, String story, String beginning, String rising, String crisis,
-        String climax, String ending) {
-        this.plotTitle = plotTitle;
-        this.story = story;
-        this.beginning = beginning;
-        this.rising = rising;
-        this.crisis = crisis;
-        this.climax = climax;
-        this.ending = ending;
+        if (plotUpdateRequest.ending() != null) {
+            this.ending = plotUpdateRequest.ending();
+        }
     }
 }
