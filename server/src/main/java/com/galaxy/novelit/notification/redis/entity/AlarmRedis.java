@@ -11,7 +11,7 @@ import org.springframework.data.redis.core.TimeToLive;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @RedisHash("AlarmRedis")
-public class AlarmRedis extends BaseTimeEntity {
+public class AlarmRedis{
     @Id
     private String pubName;
     private Noti noti;

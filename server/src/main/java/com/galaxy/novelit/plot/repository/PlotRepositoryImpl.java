@@ -3,10 +3,10 @@ package com.galaxy.novelit.plot.repository;
 import com.galaxy.novelit.plot.entity.Plot;
 import com.galaxy.novelit.plot.entity.QPlot;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,17 +24,8 @@ public class PlotRepositoryImpl implements PlotRepositoryCustom{
         String pattern = keyword + "%"; // 2. 젤 앞에
         String pattern2 = "%" + keyword + "%"; // 2. 중간
 
-        // 1. 아예 일치
-        List<Plot> list1 = queryFactory
-            .selectFrom(plot)
-            .where(
-                    plot.plotTitle.eq(keyword)
-                    .and(plot.workspaceUuid.eq(workspaceUuid))
-            )
-            .fetch();
-
-        // 2. 젤 앞에
-        List<Plot> list2 = queryFactory
+        
+        List<Plot> keywordPlots = queryFactory
             .selectFrom(plot)
             .where(
                     plot.plotTitle.like(pattern)
@@ -42,30 +33,24 @@ public class PlotRepositoryImpl implements PlotRepositoryCustom{
             )
             .fetch();
 
-        // 3. 중간에
-        List<Plot> list3 = queryFactory
-            .selectFrom(plot)
-            .where(
-                    plot.plotTitle.like(pattern2)
-                    .and(plot.workspaceUuid.eq(workspaceUuid))
-            )
-            .fetch();
+        List<Plot> keywordPlots2 = queryFactory
+                .selectFrom(plot)
+                .where(
+                        plot.plotTitle.like(pattern2)
+                                .and(plot.workspaceUuid.eq(workspaceUuid))
+                )
+                .fetch();
 
-        // 순서보장
-        LinkedHashMap<String, Plot> plotEntityHashMap = new LinkedHashMap<>();
+        // plot들 모두 담음 -> set으로 중복없앰?
+        LinkedHashSet<Plot> keywordsSet = new LinkedHashSet<>();
 
-        List<Plot> result = new ArrayList<>();
-        result.addAll(list1);
-        result.addAll(list2);
-        result.addAll(list3);
+        keywordPlots.stream().forEach(plot1 -> {
+            keywordsSet.add(plot1);
+        });
+        keywordPlots2.stream().forEach(plot1 -> {
+            keywordsSet.add(plot1);
+        });
 
-        for (Plot plot : result) {
-            plotEntityHashMap.put(plot.getPlotUuid(), plot);
-        }
-
-        List<Plot> valueList = new ArrayList<>(plotEntityHashMap.values());
-
-
-        return Optional.ofNullable(valueList);
+        return Optional.ofNullable(keywordsSet.stream().toList());
     }
 }

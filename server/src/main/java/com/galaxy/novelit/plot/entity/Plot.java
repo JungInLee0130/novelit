@@ -12,6 +12,8 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.UUID;
+
 @Entity(name = "plot")
 @Getter
 @DynamicInsert
@@ -26,7 +28,6 @@ public class Plot {
     private String workspaceUuid;
     @Column(name = "plot_uuid", nullable = false)
     private String plotUuid;
-
     @Column(name = "plot_title", length = 500)
     @ColumnDefault("'제목 없음'")
     private String plotTitle;
@@ -64,10 +65,12 @@ public class Plot {
     }
 
     // dto -> entity
-    public static Plot create(String plotString, PlotCreateRequest plotCreateRequest) {
+    public static Plot create(PlotCreateRequest plotCreateRequest) {
+        String plotUuid = UUID.randomUUID().toString();
+
         return Plot.builder()
             .workspaceUuid(plotCreateRequest.workspaceUuid())
-            .plotUuid(plotString)
+            .plotUuid(plotUuid)
             .plotTitle(plotCreateRequest.plotTitle())
             .story(plotCreateRequest.story())
             .beginning(plotCreateRequest.beginning())

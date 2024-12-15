@@ -42,9 +42,7 @@ public class PlotService {
 
     @Transactional
     public void createPlot(PlotCreateRequest plotCreateRequest) {
-        String plotUUID = UUID.randomUUID().toString();
-
-        plotRepository.save(Plot.create(plotUUID, plotCreateRequest));
+        plotRepository.save(Plot.create(plotCreateRequest));
     }
 
     @Transactional(readOnly = true)
