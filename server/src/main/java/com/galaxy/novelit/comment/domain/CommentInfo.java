@@ -17,6 +17,7 @@ public class CommentInfo extends BaseTimeEntity {
     private String commentNickname;
     private String commentUserUUID;
 
+    // 테스트코드용
     public CommentInfo(String commentUUID, String commentContent, String commentNickname, String commentUserUUID) {
         this.commentUUID = commentUUID;
         this.commentContent = commentContent;

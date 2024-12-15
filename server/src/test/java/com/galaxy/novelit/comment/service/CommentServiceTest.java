@@ -3,6 +3,7 @@ package com.galaxy.novelit.comment.service;
 import com.galaxy.novelit.comment.domain.CommentInfo;
 import com.galaxy.novelit.comment.entity.Comment;
 import com.galaxy.novelit.comment.repository.CommentRepository;
+import com.galaxy.novelit.comment.request.CommentDeleteRequest;
 import com.galaxy.novelit.comment.request.CommentUpdateRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,8 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentServiceTest {
@@ -56,7 +59,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    @DisplayName("댓글 수정 : MongoDB 영속성 테스트")
+    @DisplayName("댓글 수정하는 겸 MongoDB 영속성 테스트")
     void updateComment(){
         given(commentRepository.findCommentBySpaceUUID(any())).willReturn(Optional.ofNullable(comment));
 
@@ -69,5 +72,19 @@ public class CommentServiceTest {
         String expectedContent = "밥드세요우";
 
         Assertions.assertThat(expectedContent).isEqualTo(updateContent);
+    }
+
+    @Test
+    @DisplayName("댓글 삭제")
+    void deleteComment() throws Exception{
+        //given
+        given(commentRepository.findCommentBySpaceUUID(any())).willReturn(Optional.ofNullable(comment));
+
+        CommentDeleteRequest request = new CommentDeleteRequest(spaceUUID, commentUUID, "류현진");
+
+        commentService.deleteComment(request, userUUID);
+
+        Assertions.assertThat(commentRepository.findCommentBySpaceUUID(spaceUUID).get().getCommentInfoList().size())
+                .isEqualTo(0);
     }
 }
