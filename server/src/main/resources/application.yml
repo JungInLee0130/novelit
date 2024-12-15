@@ -1,6 +1,6 @@
 spring:
   config:
-    import: env_local.yml
+    import: env_aws.yml
 ---
 
 spring:
@@ -76,6 +76,7 @@ spring:
         jdbc:
           batch_size: 100
     open-in-view: false
+    defer-datasource-initialization: true
 
 ---
 spring:
@@ -94,6 +95,14 @@ spring:
 ---
 server:
   port: ${SPRING_SERVER_PORT}
+  
+  
+---
+## 더미데이터 테스트
+spring:
+  sql:
+    init:
+      mode: always
 
 
 

@@ -3,7 +3,7 @@ package com.galaxy.novelit.plot.service;
 import com.galaxy.novelit.common.exception.custom.CustomException;
 import com.galaxy.novelit.common.exception.custom.ErrorCode;
 import com.galaxy.novelit.plot.request.PlotCreateRequest;
-import com.galaxy.novelit.plot.request.PlotSaveRequest;
+import com.galaxy.novelit.plot.request.PlotUpdateRequest;
 import com.galaxy.novelit.plot.response.PlotDetailResponse;
 import com.galaxy.novelit.plot.response.PlotListResponse;
 import com.galaxy.novelit.plot.entity.Plot;
@@ -17,32 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class PlotService {
 
     private final PlotRepository plotRepository;
-
-    /*@Override
-    public PlotListResponseDto getPlotList(PlotListRequestDto plotListRequestDto) {
-        if (plotListRequestDto.getKeyword() == null) {
-            List<PlotEntity> plotEntities = plotRepository.findAllByWorkspaceUuid(
-                    plotListRequestDto.getWorkspaceUuid())
-                .orElseThrow(() -> new NoSuchPlotException());
-
-            return PlotListResponseDto.entityToDto(plotEntities);
-        }
-        else if (plotListRequestDto.getKeyword() != null){
-            // 키워드가있을때 -> querydsl 검색
-            *//*List<PlotEntity> plotEntities = plotRepository.findByWorkspaceUuidAndPlotTitleContaining(
-                    plotListRequestDto.getWorkspaceUuid(),
-                    plotListRequestDto.getKeyword())
-                .orElseThrow(() -> new NoSuchPlotException());
-            return PlotListResponseDto.entityToDto(plotEntities);*//*
-
-        }
-        return null;
-    }*/
 
     @Transactional(readOnly = true)
     public PlotListResponse getPlotListByKeyword(String workspaceUuid, String keyword) {
@@ -62,67 +41,30 @@ public class PlotService {
 
 
     @Transactional
-    public void createPlot(PlotCreateRequest dto) {
-        UUID plotUuid = UUID.randomUUID();
-
-        String plotString = plotUuid.toString();
-
-        Plot plot = plotRepository.save(Plot.create(plotString, dto));
-
-        if (plot == null) {
-            throw new RuntimeException();
-        }
+    public void createPlot(PlotCreateRequest plotCreateRequest) {
+        plotRepository.save(Plot.create(plotCreateRequest));
     }
 
     @Transactional(readOnly = true)
     public PlotDetailResponse getPlotDetails(String plotUuid) {
-
-        Plot plot = plotRepository.findPlotEntityByPlotUuid(plotUuid)
+        Plot plot = plotRepository.findPlotByPlotUuid(plotUuid)
             .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_PLOT, "세부정보를 가져올 플롯이 없습니다."));
 
-        return PlotDetailResponse.toDto(plot);
+        return new PlotDetailResponse(plot);
     }
 
     @Transactional
-    public void savePlot(PlotSaveRequest dto) {
-        Plot plot = plotRepository.findPlotEntityByPlotUuid(dto.getPlotUuid())
+    public void updatePlot(PlotUpdateRequest plotUpdateRequest) {
+        Plot plot = plotRepository.findPlotByPlotUuid(plotUpdateRequest.plotUuid())
             .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_PLOT, "업데이트 할 플롯이 없습니다."));
 
-        if (dto.getPlotTitle() != null) {
-            plot.updatePlotTitle(dto.getPlotTitle());
-        }
-
-        if (dto.getStory() != null) {
-            plot.updateStory(dto.getStory());
-        }
-
-        if (dto.getBeginning() != null) {
-            plot.updateBeginning(dto.getBeginning());
-        }
-
-        if (dto.getRising() != null) {
-            plot.updateRising(dto.getRising());
-        }
-
-        if (dto.getCrisis() != null) {
-            plot.updateCrisis(dto.getCrisis());
-        }
-
-        if (dto.getClimax() != null) {
-            plot.updateClimax(dto.getClimax());
-        }
-
-        if (dto.getEnding() != null) {
-            plot.updateEnding(dto.getEnding());
-        }
-
-        plotRepository.save(plot);
+        plot.updatePlot(plotUpdateRequest);
     }
 
 
     @Transactional
     public void deletePlot(String plotUuid) {
-        plotRepository.deletePlotEntitiesByPlotUuid(plotUuid)
+        plotRepository.deletePlotByPlotUuid(plotUuid)
             .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_PLOT, "삭제할 플롯이 없습니다."));
     }
 }

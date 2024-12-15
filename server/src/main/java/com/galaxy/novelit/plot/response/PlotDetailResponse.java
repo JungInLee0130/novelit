@@ -6,29 +6,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class PlotDetailResponse {
-    private String plotTitle;
-    private String story;
-    private String beginning;
-    private String rising;
-    private String crisis;
-    private String climax;
-    private String ending;
+public record PlotDetailResponse (String plotTitle,
+                                  String story,
+                                  String beginning,
+                                  String rising,
+                                  String crisis,
+                                  String climax,
+                                  String ending){
 
-    // entity -> dto
-    public static PlotDetailResponse toDto(Plot plot) {
-        return PlotDetailResponse.builder()
-            .plotTitle(plot.getPlotTitle())
-            .story(plot.getStory())
-            .beginning(plot.getBeginning())
-            .rising(plot.getRising())
-            .crisis(plot.getCrisis())
-            .climax(plot.getClimax())
-            .ending(plot.getEnding())
-            .build();
+    public PlotDetailResponse (Plot plot) {
+        this(plot.getPlotTitle(), plot.getStory(), plot.getBeginning(), plot.getRising(),
+                plot.getCrisis(), plot.getClimax(), plot.getEnding());
     }
 }

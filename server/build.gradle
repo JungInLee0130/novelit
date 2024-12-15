@@ -45,8 +45,9 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 //	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
+
+	// h2
+	implementation 'com.h2database:h2'
 
 	//mapStruct
 	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
@@ -74,6 +75,10 @@ dependencies {
 	// string boot actuator, prometheus
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("io.micrometer:micrometer-registry-prometheus")
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'com.h2database:h2'
 }
 
 tasks.named('test') {

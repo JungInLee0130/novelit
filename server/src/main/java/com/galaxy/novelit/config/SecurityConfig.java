@@ -57,7 +57,8 @@ public class SecurityConfig {
 				.requestMatchers(
 					"/login/**",
 					"/util/**",
-					"/actuator/**"
+					"/actuator/**",
+						"/plot/**"
 				).permitAll()
 				.requestMatchers(HttpMethod.GET,"/file").hasAnyAuthority("USER","EDITOR")
 				.requestMatchers(HttpMethod.PATCH,"/file").hasAnyAuthority("USER","EDITOR")
