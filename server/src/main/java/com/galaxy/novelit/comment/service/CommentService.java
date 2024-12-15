@@ -49,7 +49,7 @@ public class CommentService {
         CommentInfo commentInfo = CommentInfo.createCommentInfo(commentAddRequest, userUUID);
         commentInfoList.add(commentInfo);
 
-        comment.updateCommentInfoList(commentInfoList);
+        comment.updateComment(commentInfoList);
 
         commentRepository.save(comment);
     }
@@ -72,9 +72,10 @@ public class CommentService {
         Comment comment = commentRepository.findCommentBySpaceUUID(commentUpdateRequest.spaceUUID())
                 .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_COMMENT));
 
-        comment.updateCommentInfoList(commentUpdateRequest, userUUID);
+        comment.updateComment(commentUpdateRequest, userUUID);
     }
 
+    // 테스트용
     @Transactional(readOnly = true)
     public CommentInfo getCommentInfo(String spaceUUID, String commentUUID) {
         Comment comment = commentRepository.findCommentBySpaceUUID(spaceUUID)
@@ -93,25 +94,9 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(CommentDeleteRequest commentDeleteRequest, String userUUID) {
-        // 코멘트 서치
-        Comment comment = commentRepository.findCommentBySpaceUUID(
-                commentDeleteRequest.spaceUUID())
+        Comment comment = commentRepository.findCommentBySpaceUUID(commentDeleteRequest.spaceUUID())
                 .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_COMMENT));
 
-        List<CommentInfo> commentInfoList = comment.getCommentInfoList();
-
-        // 세부 코멘트 서치
-        for (CommentInfo info :commentInfoList) {
-            // 소설가인 경우 : 로그인한 사람이랑 같음. 비밀번호없음
-            if (info.getCommentUUID().equals(commentDeleteRequest.commentUUID())
-                && info.getCommentUserUUID().equals(userUUID)) {
-                commentInfoList.remove(info);
-                comment.updateCommentInfoList(commentInfoList);
-                commentRepository.save(comment);
-                return;
-            }
-        }
-
-        throw new CustomException(ErrorCode.NO_SUCH_COMMENT_UUID, "method : deleteComment. 해당하는 코멘트 UUID가 없습니다!");
+        comment.deleteComment(commentDeleteRequest, userUUID);
     }
 }
