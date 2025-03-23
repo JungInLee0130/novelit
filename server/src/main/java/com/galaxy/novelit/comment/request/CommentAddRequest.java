@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 public record CommentAddRequest(@NotBlank String spaceUUID,
                                 @NotBlank String directoryUUID,
                                 @NotBlank String commentContent,
-                                @NotBlank String commentNickname,
-                                @NotNull String userUUID) {
+                                @NotBlank String commentNickname) {
 
 }

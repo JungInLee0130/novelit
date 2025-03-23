@@ -1,6 +1,7 @@
 package com.galaxy.novelit.comment.service;
 
 import com.galaxy.novelit.comment.domain.CommentInfo;
+import com.galaxy.novelit.comment.repository.CommentInfoRepository;
 import com.galaxy.novelit.comment.response.CommentInfoResponse;
 import com.galaxy.novelit.comment.request.CommentAddRequest;
 import com.galaxy.novelit.comment.request.CommentDeleteRequest;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -23,18 +25,18 @@ import java.util.Objects;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final CommentInfoRepository commentInfoRepository;
 
 
     @Transactional
     public void addComment(CommentAddRequest commentAddRequest, String userUUID) {
-        Comment comment = commentRepository.findCommentBySpaceUUID(commentAddRequest.spaceUUID())
-                .orElseGet(null);
+        Optional<Comment> comment = commentRepository.findCommentBySpaceUUID(commentAddRequest.spaceUUID());
 
-        if (Objects.isNull(comment)) {
-            createFirstComment(commentAddRequest, userUUID);
+        if (comment.isPresent()) {
+            putAnotherComment(comment.get(), commentAddRequest, userUUID);
         }
         else {
-            putAnotherComment(comment, commentAddRequest, userUUID);
+            createFirstComment(commentAddRequest, userUUID);
         }
     }
 
@@ -75,10 +77,23 @@ public class CommentService {
         comment.updateComment(commentUpdateRequest, userUUID);
     }
 
+
+    @Transactional
+    public void deleteComment(CommentDeleteRequest commentDeleteRequest, String userUUID) {
+        Comment comment = commentRepository.findCommentBySpaceUUID(commentDeleteRequest.spaceUUID())
+                .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_COMMENT));
+
+        comment.deleteComment(commentDeleteRequest, userUUID);
+    }
+
     // 테스트용
     @Transactional(readOnly = true)
     public CommentInfo getCommentInfo(String spaceUUID, String commentUUID) {
-        Comment comment = commentRepository.findCommentBySpaceUUID(spaceUUID)
+        CommentInfo commentInfo = commentInfoRepository.findById(spaceUUID)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "해당 코멘트가 없어요."));
+
+        return commentInfo;
+        /*Comment comment = commentRepository.findCommentBySpaceUUID(spaceUUID)
                 .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_COMMENT));
 
         List<CommentInfo> commentInfos = comment.getCommentInfoList();
@@ -88,15 +103,6 @@ public class CommentService {
                 return commentInfo;
             }
         }
-        throw new CustomException(ErrorCode.NO_SUCH_COMMNET_INFO);
-    }
-
-
-    @Transactional
-    public void deleteComment(CommentDeleteRequest commentDeleteRequest, String userUUID) {
-        Comment comment = commentRepository.findCommentBySpaceUUID(commentDeleteRequest.spaceUUID())
-                .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_COMMENT));
-
-        comment.deleteComment(commentDeleteRequest, userUUID);
+        throw new CustomException(ErrorCode.NO_SUCH_COMMNET_INFO);*/
     }
 }

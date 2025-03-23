@@ -1,12 +1,9 @@
 package com.galaxy.novelit.plot.repository;
 
 import com.galaxy.novelit.plot.entity.Plot;
-import com.galaxy.novelit.plot.entity.QPlot;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,7 +38,6 @@ public class PlotRepositoryImpl implements PlotRepositoryCustom{
                 )
                 .fetch();
 
-        // plot들 모두 담음 -> set으로 중복없앰?
         LinkedHashSet<Plot> keywordsSet = new LinkedHashSet<>();
 
         keywordPlots.stream().forEach(plot1 -> {
