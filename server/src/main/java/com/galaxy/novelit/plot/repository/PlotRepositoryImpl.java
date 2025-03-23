@@ -1,14 +1,13 @@
 package com.galaxy.novelit.plot.repository;
 
-import com.galaxy.novelit.plot.entity.PlotEntity;
-import com.galaxy.novelit.plot.entity.QPlotEntity;
+import com.galaxy.novelit.plot.entity.Plot;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import static com.galaxy.novelit.plot.entity.QPlot.plot;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -17,51 +16,37 @@ public class PlotRepositoryImpl implements PlotRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<List<PlotEntity>> findByKeyword(String workspaceUuid, String keyword) {
+    public Optional<List<Plot>> findByKeyword(String workspaceUuid, String keyword) {
 
-        String pattern = keyword + "%";
-        String pattern2 = "%" + keyword + "%";
+        String pattern = keyword + "%"; // 2. 젤 앞에
+        String pattern2 = "%" + keyword + "%"; // 2. 중간
 
-        QPlotEntity qPlot = QPlotEntity.plotEntity;
-
-        List<PlotEntity> list1 = queryFactory
-            .selectFrom(qPlot)
+        
+        List<Plot> keywordPlots = queryFactory
+            .selectFrom(plot)
             .where(
-                qPlot.plotTitle.eq(keyword)
-                    .and(qPlot.workspaceUuid.eq(workspaceUuid))
+                    plot.plotTitle.like(pattern)
+                    .and(plot.workspaceUuid.eq(workspaceUuid))
             )
             .fetch();
 
-        List<PlotEntity> list2 = queryFactory
-            .selectFrom(qPlot)
-            .where(
-                qPlot.plotTitle.like(pattern)
-                    .and(qPlot.workspaceUuid.eq(workspaceUuid))
-            )
-            .fetch();
+        List<Plot> keywordPlots2 = queryFactory
+                .selectFrom(plot)
+                .where(
+                        plot.plotTitle.like(pattern2)
+                                .and(plot.workspaceUuid.eq(workspaceUuid))
+                )
+                .fetch();
 
-        List<PlotEntity> list3 = queryFactory
-            .selectFrom(qPlot)
-            .where(
-                qPlot.plotTitle.like(pattern2)
-                    .and(qPlot.workspaceUuid.eq(workspaceUuid))
-            )
-            .fetch();
+        LinkedHashSet<Plot> keywordsSet = new LinkedHashSet<>();
 
-        LinkedHashMap<String, PlotEntity> plotEntityHashMap = new LinkedHashMap<>();
+        keywordPlots.stream().forEach(plot1 -> {
+            keywordsSet.add(plot1);
+        });
+        keywordPlots2.stream().forEach(plot1 -> {
+            keywordsSet.add(plot1);
+        });
 
-        List<PlotEntity> result = new ArrayList<>();
-        result.addAll(list1);
-        result.addAll(list2);
-        result.addAll(list3);
-
-        for (PlotEntity plotEntity : result) {
-            plotEntityHashMap.put(plotEntity.getPlotUuid(), plotEntity);
-        }
-
-        List<PlotEntity> valueList = new ArrayList<>(plotEntityHashMap.values());
-
-
-        return Optional.ofNullable(valueList);
+        return Optional.ofNullable(keywordsSet.stream().toList());
     }
 }
