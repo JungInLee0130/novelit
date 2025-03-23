@@ -85,7 +85,7 @@ public class Comment {
     }
 
     private void validateCommentInfoList(List<CommentInfo> commentInfoList) {
-        if (Objects.isNull(commentInfoList)){
+        if (Objects.isNull(commentInfoList) || commentInfoList.size() == 0){
             throw new CustomException(ErrorCode.NOT_FOUND, "댓글목록이 없습니다.");
         }
     }

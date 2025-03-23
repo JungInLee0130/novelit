@@ -1,6 +1,6 @@
 spring:
   config:
-    import: env_aws.yml
+    import: env_local.yml
 ---
 
 spring:
@@ -16,7 +16,7 @@ spring:
             authorization-grant-type: authorization_code
             #            redirect-uri: ${KAKAO_REDIRECT_URL}
             #            redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
-            redirect-uri: ${KAKAO_REDIRECT_URL}
+            redirect-uri: ${KAKAO_REDIRECT_URI}
             scope:
               - profile_nickname
               - account_email
@@ -103,6 +103,28 @@ spring:
   sql:
     init:
       mode: always
+
+---
+### monitoring
+management:
+  server:
+    port: ${MANAGEMENT_SERVER_PORT}
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+
+---
+logging:
+  level:
+    com:
+      galaxy:
+        novelit: info
 
 
 

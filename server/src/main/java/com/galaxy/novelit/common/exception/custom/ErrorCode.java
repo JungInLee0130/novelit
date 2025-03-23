@@ -30,7 +30,6 @@ public enum ErrorCode {
     NO_SUCH_COMMENT(HttpStatus.NOT_FOUND, "존재하지 않는 댓글입니다!"),
     NO_SUCH_COMMENT_UUID(HttpStatus.NOT_FOUND, "존재하지 않는 코멘트 UUID입니다!"),
     NO_SUCH_COMMNET_INFO(HttpStatus.NOT_FOUND, "해당 댓글정보가 없습니다!"),
-
     DELETED_ELEMENT(HttpStatus.NOT_FOUND, "삭제된 자료입니다!"),
     NOT_FOUND(HttpStatus.NOT_FOUND, "NOT_FOUND");
 
