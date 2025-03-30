@@ -82,10 +82,7 @@
 
 ## 기술 스택 및 버전
 
-<aside>
-💡 **Server**
-
-</aside>
+### `💡**Server**`
 
 ### `**Back-end server**`
 
@@ -106,7 +103,7 @@
 - MongoDB - (v 7.0.2)
 - redis version:7.2.3 - 포트 : 3503 → 6379 (aws포트 - 컨테이너포트)
 
-### **`Infra`**
+### `**Infra**`
 
 - AWS EC2
 - Docker - v.24.0.6
@@ -117,10 +114,12 @@
 - node-exporter - 포트: 3501 → 9091
 - grafana - 포트: 3502 → 3000
 
-<aside>
-💡 **Web Frontend**
+### `**Test**`
 
-</aside>
+- Jmeter
+
+
+### `💡**Web Frontend**`
 
 - Next.js 13.4.12
 - typescript 5.1.6
@@ -135,12 +134,10 @@
 - react-spinners 0.13.8
 - yup 1.2.0
 
-<aside>
-💡 **Cooperation**
 
-</aside>
+### `💡**Cooperation**`
 
 - JIRA
 - Notion
 - Slack
-- Git Lab
+- GitLab
