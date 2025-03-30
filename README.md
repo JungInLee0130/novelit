@@ -1,6 +1,13 @@
 ![novelit](https://github.com/galaxy-dan/novelit/assets/85854928/62f15271-bcd8-4938-a419-e0da2c72d6a8)
 ![novelit2](https://github.com/user-attachments/assets/e99d3f04-a057-4291-9874-fe5488d1c865)
 
+## 아키텍처
+
+![Novelit_architecture](https://github.com/user-attachments/assets/68dab917-75bb-4685-a74f-f5400029a32c)
+
+## ERD
+![Novelit_ERD](https://github.com/user-attachments/assets/a0613684-bbb2-4629-b524-1f2fff32cc27)
+
 ## 주요 기능
 
 ### 카카오 로그인
