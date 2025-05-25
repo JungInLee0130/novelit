@@ -61,15 +61,17 @@ spring:
 
 spring:
   jpa:
-    show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl # ?? camelCase-> underscore ?? ??.
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
-        format_sql: true
+        show_sql: true              # sql 보기 옵션
+        format_sql: true            # 예쁘게 포맷팅
+        highlight_sql: true         # ANSI 코드에 색을 나타낸다
+        use_sql_comments: true      # jpql 실행문 볼수있음
         dialect: org.hibernate.dialect.MariaDBDialect
         order_updates: true
         order_inserts: true
